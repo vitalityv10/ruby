@@ -24,6 +24,20 @@
   </head>
 
   <body>
+    <nav class="topbar">
+      <%= link_to "Рибальський дворик", root_path, class: "brand" %>
+      <span>
+        <% if logged_in? %>
+          <%= current_user.full_name %>
+          <%= button_to "Вийти", logout_path, method: :delete, class: "btn-link", form: { class: "inline" } %>
+        <% else %>
+          <%= link_to "Вхід", login_path %> · <%= link_to "Реєстрація", register_path %>
+        <% end %>
+      </span>
+    </nav>
+    <% flash.each do |type, msg| %>
+      <div class="flash flash-<%= type %>"><%= msg %></div>
+    <% end %>
     <%= yield %>
   </body>
 </html>

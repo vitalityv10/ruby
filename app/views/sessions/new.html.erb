@@ -1,15 +1,18 @@
-<h1>Вхід в систему</h1>
+<% content_for :title, "Вхід у кабінет" %>
+<div class="auth-card">
+  <h1>Вхід у кабінет</h1>
 
-<%= form_with url: login_path do |f| %>
-  <div>
-    <%= f.label :email %>
-    <%= f.email_field :email %>
-  </div>
+  <%= form_with url: login_path do |f| %>
+    <div class="field">
+      <%= f.label :email, "Електронна пошта" %>
+      <%= f.email_field :email, required: true, autofocus: true, autocomplete: "email" %>
+    </div>
+    <div class="field">
+      <%= f.label :password, "Пароль" %>
+      <%= f.password_field :password, required: true, autocomplete: "current-password" %>
+    </div>
+    <%= f.submit "Увійти", class: "btn-submit" %>
+  <% end %>
 
-  <div>
-    <%= f.label :password, "Пароль" %>
-    <%= f.password_field :password %>
-  </div>
-
-  <%= f.submit "Увійти" %>
-<% end %>
+  <p class="auth-link">Немає акаунту? <%= link_to "Зареєструватися", register_path %></p>
+</div>
