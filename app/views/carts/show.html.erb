@@ -1,0 +1,33 @@
+<% content_for :title, "Кошик — Рибальський дворик" %>
+<div class="cart-page">
+  <h1>Кошик</h1>
+  <% if @line_items.empty? %>
+    <p>Ваш кошик порожній. <%= link_to "Перейти до каталогу", products_path %></p>
+  <% else %>
+    <table class="cart-table">
+      <thead><tr><th></th><th>Товар</th><th>Ціна</th><th>Кількість</th><th>Сума</th><th></th></tr></thead>
+      <tbody>
+        <% @line_items.each do |item| %>
+          <tr>
+            <td class="thumb">
+              <% if item.product.image_url.present? %><%= image_tag item.product.image_url, alt: item.product.name %><% else %>🎣<% end %>
+            </td>
+            <td><%= link_to item.product.name, product_path(item.product) %></td>
+            <td><%= format_uah(item.product.price) %></td>
+            <td class="qty">
+              <%= button_to "−", line_item_path(item, change: -1), method: :patch, class: "qty-btn" %>
+              <span><%= item.quantity %></span>
+              <%= button_to "+", line_item_path(item, change: 1), method: :patch, class: "qty-btn" %>
+            </td>
+            <td><%= format_uah(item.subtotal) %></td>
+            <td><%= button_to "Видалити", line_item_path(item), method: :delete, class: "btn-danger" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <div class="cart-summary">
+      <p>Загальна сума: <strong><%= format_uah(current_cart.total_price) %></strong></p>
+      <%= link_to "Перейти до оформлення", "#", class: "btn-checkout" %>
+    </div>
+  <% end %>
+</div>

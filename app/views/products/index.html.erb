@@ -1,0 +1,31 @@
+<% content_for :title, "Каталог — Рибальський дворик" %>
+<div class="catalog">
+  <aside class="categories">
+    <h2>Категорії</h2>
+    <ul>
+      <li><%= link_to "Усі товари", products_path(q: @query.presence), class: ("active" unless @current_category) %></li>
+      <% @categories.each do |c| %>
+        <li><%= link_to c.name, products_path(category_id: c.id, q: @query.presence), class: ("active" if c == @current_category) %></li>
+      <% end %>
+    </ul>
+  </aside>
+
+  <section class="catalog-main">
+    <h1><%= @current_category&.name || "Каталог товарів" %></h1>
+    <%= form_with url: products_path, method: :get, class: "search-form" do |f| %>
+      <%= hidden_field_tag :category_id, @current_category.id if @current_category %>
+      <%= f.search_field :q, value: @query, placeholder: "Пошук за назвою..." %>
+      <%= f.submit "Шукати", name: nil %>
+    <% end %>
+    <p class="muted">Знайдено товарів: <%= @total_count %></p>
+
+    <% if @products.any? %>
+      <div class="product-grid">
+        <%= render partial: "products/product", collection: @products %>
+      </div>
+      <%= render "products/pagination" %>
+    <% else %>
+      <p>Нічого не знайдено.</p>
+    <% end %>
+  </section>
+</div>

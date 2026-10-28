@@ -9,7 +9,13 @@ Rails.application.routes.draw do
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
-  root 'welcome#index'
+  root 'products#index'
+  resources :products, only: [:index, :show]
+  resource :cart, only: [:show]
+  resources :line_items, only: [:create, :update, :destroy]
+  resources :categories, only: [] do
+    resources :products, only: [:index]
+  end
   # Defines the root path route ("/")
   # root "posts#index"
   get  "register", to: "users#new"
