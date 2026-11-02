@@ -1,0 +1,27 @@
+<% content_for :title, "Звернення №#{@feedback.id}" %>
+<div class="admin">
+  <%= render "admin/nav" %>
+  <h1>Звернення №<%= @feedback.id %></h1>
+  <div class="receipt-info">
+    <p><strong>Від:</strong> <%= @feedback.name %> · <%= @feedback.email %> · <%= @feedback.phone %>
+      <% if @feedback.user %>(акаунт: <%= @feedback.user.email %>)<% end %></p>
+    <p><strong>Тема:</strong> <%= @feedback.topic %></p>
+    <% if @feedback.sku.present? %><p><strong>Артикул:</strong> <%= @feedback.sku %></p><% end %>
+    <p><strong>Повідомлення:</strong></p>
+    <%= simple_format(@feedback.message) %>
+  </div>
+  <% if @feedback.admin_reply.present? %>
+    <div class="receipt-info">
+      <p><strong>Остання відповідь (<%= l(@feedback.replied_at, format: "%d.%m.%Y %H:%M") %>):</strong></p>
+      <%= simple_format(@feedback.admin_reply) %>
+    </div>
+  <% end %>
+  <%= form_with url: reply_admin_feedback_path(@feedback), method: :patch, class: "admin-form" do |f| %>
+    <%= f.label :admin_reply, "Відповідь клієнту" %>
+    <%= f.text_area :admin_reply, rows: 5, required: true %>
+    <label><%= check_box_tag :send_email, "1", true %> Надіслати також на пошту (<%= @feedback.email %>)</label>
+    <p class="muted">Відповідь завжди з'являється в профілі клієнта (розділ «Мої звернення»), якщо він увійшов у свій акаунт або вказав ту ж пошту.</p>
+    <%= f.submit "Відповісти", class: "btn-checkout" %>
+    <%= link_to "До списку", admin_feedbacks_path %>
+  <% end %>
+</div>

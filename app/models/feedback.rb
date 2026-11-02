@@ -19,6 +19,8 @@ class Feedback < ApplicationRecord
     ATTRIBUTE_NAMES[attr.to_sym] || super
   end
 
+  belongs_to :user, optional: true
+
   # status: 0 - очікує обробки, 1 - опрацьовано
   enum :status, { pending: 0, resolved: 1 }
 

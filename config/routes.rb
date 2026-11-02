@@ -24,8 +24,23 @@ Rails.application.routes.draw do
   resources :users, only: [:create]
   get  "login",  to: "sessions#new"
   post "login",  to: "sessions#create"
+  namespace :admin do
+    root to: "dashboard#index"
+    resources :products, except: [:show] do
+      collection { get :bulk; post :bulk_create }
+    end
+    resources :categories, only: [:index, :create, :destroy]
+    resources :orders, only: [:index, :show] do
+      member { patch :update_status; patch :mark_paid }
+    end
+    resources :feedbacks, only: [:index, :show] do
+      member { patch :reply }
+    end
+  end
   resource :profile, only: [:show]
-  resources :orders, only: [:new, :create, :show]
+  resources :orders, only: [:new, :create, :show] do
+    member { patch :cancel }
+  end
   get  "contact", to: "feedbacks#new"
   post "contact", to: "feedbacks#create"
   delete "logout", to: "sessions#destroy"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_02_160100) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_02_170000) do
   create_table "carts", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -29,15 +29,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_02_160100) do
   end
 
   create_table "feedbacks", force: :cascade do |t|
+    t.text "admin_reply"
     t.datetime "created_at", null: false
     t.string "email", null: false
     t.text "message", null: false
     t.string "name", null: false
     t.string "phone"
+    t.datetime "replied_at"
     t.string "sku"
     t.integer "status", default: 0, null: false
     t.string "topic", null: false
     t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.index ["user_id"], name: "index_feedbacks_on_user_id"
   end
 
   create_table "line_items", force: :cascade do |t|
@@ -120,6 +124,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_02_160100) do
   end
 
   add_foreign_key "carts", "users"
+  add_foreign_key "feedbacks", "users"
   add_foreign_key "line_items", "carts"
   add_foreign_key "line_items", "products"
   add_foreign_key "order_items", "orders"

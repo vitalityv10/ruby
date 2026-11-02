@@ -23,7 +23,27 @@ class OrdersController < ApplicationController
     @order = current_user.orders.includes(order_items: :product).find(params[:id])
   end
 
+  # Клієнт скасовує лише неоплачене й невідправлене замовлення (решту — через адміністратора)
+  def cancel
+    @order = current_user.orders.find(params[:id])
+    mode = @order.cancellation_mode
+    if mode == :self_service
+      @order.cancel!
+      redirect_to @order, notice: "Замовлення №#{@order.id} скасовано."
+    else
+      redirect_to @order, alert: cancel_denied_message(mode)
+    end
+  end
+
   private
+
+  def cancel_denied_message(mode)
+    case mode
+    when :contact_admin then "Замовлення вже оплачено. Щоб скасувати його, зверніться до адміністратора."
+    when :shipped then "Замовлення вже відправлено. Скасувати його не можна — після отримання можна оформити повернення."
+    else "Це замовлення вже не можна скасувати."
+    end
+  end
 
   def order_params
     params.require(:order).permit(:recipient_name, :recipient_phone, :delivery_method, :city,

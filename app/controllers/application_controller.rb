@@ -12,6 +12,9 @@ class ApplicationController < ActionController::Base
   rescue_from ActiveRecord::RecordNotUnique, with: :handle_conflict
   rescue_from ActiveRecord::RecordInvalid, with: :handle_invalid_record
 
+  # Адміністратор працює виключно в адмін-панелі: усі сторінки магазину ведуть до неї
+  before_action :keep_admin_in_panel
+
   helper_method :current_user, :logged_in?, :authenticate_user!, :require_admin!
 
   def current_user
@@ -33,6 +36,12 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def keep_admin_in_panel
+    return unless current_user&.admin?
+    return if is_a?(Admin::BaseController) || is_a?(SessionsController)
+    redirect_to admin_root_path
+  end
 
   def handle_not_found(exception)
     Rails.logger.warn("Not found: #{exception.message}")

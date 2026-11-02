@@ -1,0 +1,22 @@
+<% content_for :title, "Категорії — адмін" %>
+<div class="admin">
+  <%= render "admin/nav" %>
+  <h1>Категорії</h1>
+  <%= form_with model: [:admin, @category], class: "admin-form inline-form" do |f| %>
+    <%= f.text_field :name, placeholder: "Назва нової категорії", required: true %>
+    <%= f.text_field :description, placeholder: "Опис (необов'язково)" %>
+    <%= f.submit "Додати", class: "btn-checkout small" %>
+  <% end %>
+  <table class="cart-table">
+    <thead><tr><th>Назва</th><th>Товарів</th><th></th></tr></thead>
+    <tbody>
+      <% @categories.each do |c| %>
+        <tr>
+          <td><%= c.name %></td><td><%= c.products_count %></td>
+          <td><%= button_to "Видалити", admin_category_path(c), method: :delete, class: "btn-danger", disabled: c.products_count.to_i.positive?, form: { data: { turbo_confirm: "Видалити категорію «#{c.name}»?" } } %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <p class="muted">Категорію з товарами видалити не можна.</p>
+</div>

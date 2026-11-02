@@ -1,0 +1,12 @@
+<% content_for :title, "Адмін-панель" %>
+<div class="admin">
+  <%= render "admin/nav" %>
+  <h1>Адмін-панель</h1>
+  <div class="admin-cards">
+    <%= link_to admin_products_path, class: "admin-card" do %><strong><%= @counts[:products] %></strong><span>Товарів</span><% end %>
+    <%= link_to admin_categories_path, class: "admin-card" do %><strong><%= @counts[:categories] %></strong><span>Категорій</span><% end %>
+    <%= link_to admin_orders_path(status: "completed"), class: "admin-card" do %><strong><%= @counts[:orders_new] %></strong><span>Очікують відправки</span><% end %>
+    <%= link_to admin_orders_path(status: "shipped"), class: "admin-card" do %><strong><%= @counts[:orders_shipped] %></strong><span>У дорозі</span><% end %>
+    <%= link_to admin_feedbacks_path(status: "pending"), class: "admin-card" do %><strong><%= @counts[:feedbacks_new] %></strong><span>Нових звернень</span><% end %>
+  </div>
+</div>

@@ -1,0 +1,29 @@
+<% content_for :title, "Товари — адмін" %>
+<div class="admin">
+  <%= render "admin/nav" %>
+  <h1>Товари</h1>
+  <div class="admin-toolbar">
+    <%= form_with url: admin_products_path, method: :get, class: "search-form" do |f| %>
+      <%= f.search_field :q, value: @query, placeholder: "Пошук за назвою..." %>
+      <%= f.submit "Шукати", name: nil %>
+    <% end %>
+    <%= link_to "+ Новий товар", new_admin_product_path, class: "btn-checkout small" %>
+    <%= link_to "Додати через JSON", bulk_admin_products_path, class: "btn-checkout small" %>
+  </div>
+  <table class="cart-table">
+    <thead><tr><th>Назва</th><th>Категорія</th><th>Артикул</th><th>Ціна</th><th>Залишок</th><th></th></tr></thead>
+    <tbody>
+      <% @products.each do |p| %>
+        <tr>
+          <td><%= p.name %></td><td><%= p.category.name %></td><td><%= p.sku %></td>
+          <td><%= format_uah(p.price) %></td><td><%= p.stock_quantity %></td>
+          <td class="row-actions">
+            <%= link_to "Редагувати", edit_admin_product_path(p) %>
+            <%= button_to "Видалити", admin_product_path(p), method: :delete, class: "btn-danger", form: { data: { turbo_confirm: "Видалити «#{p.name}»?" } } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= render "admin/pagination" %>
+</div>
