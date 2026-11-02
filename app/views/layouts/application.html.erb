@@ -40,5 +40,14 @@
       <div class="flash flash-<%= type %>"><%= msg %></div>
     <% end %>
     <%= yield %>
+    <footer class="site-footer">
+      <div class="footer-info">
+        <p><strong>Рибальський дворик</strong></p>
+        <p>м. Київ, вул. Рибальська, 12</p>
+        <p>Пн-Сб: 08:00 - 20:00, Нд: 09:00 - 17:00</p>
+        <p>+38 (044) 123-45-67 · info@rybalskyi-dvoryk.ua</p>
+      </div>
+      <%= link_to "Зв'язатися з нами", contact_path, class: "btn-checkout" %>
+    </footer>
   </body>
 </html>

@@ -63,7 +63,7 @@ body { font-family: system-ui, sans-serif; background: #eef3f7; margin: 0; color
   input[type=submit] { padding: 8px 16px; background: #0b4f6c; color: #fff; border: 0; border-radius: 6px; cursor: pointer; }
 }
 .muted { color: #6b7c88; }
-.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+.product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .product-card { background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.1);
   h3 { margin: 8px 0; font-size: 1rem; a { color: inherit; text-decoration: none; } }
 }
@@ -115,3 +115,28 @@ body { font-family: system-ui, sans-serif; background: #eef3f7; margin: 0; color
 .stars { color: #f2a515; }
 .review-login { text-align: center; margin-top: 16px; }
 .card-rating { margin: 4px 0; font-size: .9rem; }
+
+/* Контакти / зворотний зв'язок */
+.contact-page { max-width: 1000px; margin: 24px auto; padding: 0 16px; }
+.contact-columns { display: flex; gap: 24px; align-items: flex-start;
+  @media (max-width: 700px) { flex-direction: column; }
+}
+.contact-details { flex: 1; background: #fff; padding: 16px 20px; border-radius: 8px; }
+.contact-form { flex: 2; background: #fff; padding: 16px 20px; border-radius: 8px;
+  .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
+  .field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+  input, select, textarea { padding: 8px; border: 1px solid #b7c6d1; border-radius: 6px; font: inherit; }
+}
+.form-errors { background: #fde2e2; color: #a12626; padding: 8px 8px 8px 28px; border-radius: 6px; }
+
+/* Футер */
+.site-footer { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+  margin-top: 32px; padding: 20px 24px; background: #0b4f6c; color: #fff;
+  p { margin: 2px 0; }
+}
+
+/* Футер завжди внизу сторінки, навіть коли контенту мало */
+body { min-height: 100vh; display: flex; flex-direction: column; }
+body > .site-footer { margin-top: auto; }
+/* У flex-колонці блоки з margin: auto стискаються до ширини вмісту — тримаємо повну ширину */
+body > * { width: 100%; box-sizing: border-box; }

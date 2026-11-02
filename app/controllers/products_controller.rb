@@ -1,5 +1,5 @@
 class ProductsController < ApplicationController
-  PER_PAGE = 3
+  PER_PAGE = 6
 
   def index
     @categories = Category.ordered
