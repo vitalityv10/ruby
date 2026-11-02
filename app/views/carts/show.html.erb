@@ -1,8 +1,9 @@
 <% content_for :title, "Кошик — Рибальський дворик" %>
 <div class="cart-page">
-  <h1>Кошик</h1>
+  <%= link_to "← Назад", products_path, class: "back-link cart-back", data: { turbo: false }, onclick: "if (history.length > 1) { history.back(); return false; }" %>
+  <h1 class="cart-title">Кошик</h1>
   <% if @line_items.empty? %>
-    <p>Ваш кошик порожній. <%= link_to "Перейти до каталогу", products_path %></p>
+    <p class="cart-empty">Ваш кошик порожній.</p>
   <% else %>
     <table class="cart-table">
       <thead><tr><th></th><th>Товар</th><th>Ціна</th><th>Кількість</th><th>Сума</th><th></th></tr></thead>
@@ -25,6 +26,15 @@
         <% end %>
       </tbody>
     </table>
+    <% if @total_pages > 1 %>
+      <nav class="pagination" aria-label="Сторінки">
+        <% if @page > 1 %><%= link_to "Попередня", cart_path(page: @page - 1), class: "page-link" %><% else %><span class="page-link disabled">Попередня</span><% end %>
+        <% (1..@total_pages).each do |n| %>
+          <%= link_to n, cart_path(page: n), class: "page-link#{' current' if n == @page}" %>
+        <% end %>
+        <% if @page < @total_pages %><%= link_to "Наступна", cart_path(page: @page + 1), class: "page-link" %><% else %><span class="page-link disabled">Наступна</span><% end %>
+      </nav>
+    <% end %>
     <div class="cart-summary">
       <p>Загальна сума: <strong><%= format_uah(current_cart.total_price) %></strong></p>
       <%= link_to "Перейти до оформлення", "#", class: "btn-checkout" %>

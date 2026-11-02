@@ -1,4 +1,5 @@
 class LineItemsController < ApplicationController
+  before_action :authenticate_user!
   def create
     product = Product.find(params[:product_id])
     return redirect_back_or_to(product_path(product), alert: "Товару немає в наявності") unless product.in_stock?

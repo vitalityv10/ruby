@@ -97,3 +97,12 @@ body { font-family: system-ui, sans-serif; background: #eef3f7; margin: 0; color
 .btn-checkout { display: inline-block; background: #e67e22; color: #fff; border: 0; padding: 12px 24px; border-radius: 8px; font-size: 1rem; font-weight: 700; text-decoration: none; cursor: pointer;
   &.small { padding: 6px 12px; font-size: .9rem; }
 }
+.back-link {
+  display: inline-block; margin: 16px 24px 0; padding: 8px 18px;
+  border: 2px solid #0b4f6c; border-radius: 8px; background: #fff;
+  color: #0b4f6c; font-weight: 600; text-decoration: none;
+  &:hover { background: #0b4f6c; color: #fff; }
+}
+.cart-title { text-align: center; margin: 8px 0 16px; }
+.cart-back { margin: 0 0 8px; }
+.cart-empty { text-align: center; }
