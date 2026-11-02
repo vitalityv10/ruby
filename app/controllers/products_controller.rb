@@ -12,9 +12,14 @@ class ProductsController < ApplicationController
     @total_pages = [(@total_count / PER_PAGE.to_f).ceil, 1].max
     @page = params[:page].to_i.clamp(1, @total_pages)
     @products = scope.limit(PER_PAGE).offset((@page - 1) * PER_PAGE)
+    # Рейтинги сторінки одним агрегатним запитом (без N+1)
+    ids = @products.map(&:id)
+    @ratings = Review.where(product_id: ids).group(:product_id).average(:rating)
+    @review_counts = Review.where(product_id: ids).group(:product_id).count
   end
 
   def show
     @product = Product.includes(:category).find(params[:id])
+    @reviews = @product.reviews.includes(:user).order(created_at: :desc)
   end
 end

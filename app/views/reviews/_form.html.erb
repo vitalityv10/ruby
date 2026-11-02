@@ -1,0 +1,22 @@
+<% if logged_in? %>
+  <% if @product.reviews.exists?(user_id: current_user.id) %>
+    <p class="muted">Ви вже залишили відгук для цього товару.</p>
+  <% else %>
+    <%= form_with model: [@product, Review.new], class: "review-form", data: { turbo: false } do |f| %>
+      <h3>Залишити відгук</h3>
+      <%= f.label :rating, "Оцінка" %>
+      <%= f.select :rating, (1..5).to_a.reverse.map { |n| ["#{'★' * n} (#{n})", n] }, { prompt: "Оберіть оцінку" }, required: true %>
+      <%= f.label :comment, "Коментар" %>
+      <%= f.text_area :comment, rows: 3, placeholder: "Коментар обов'язковий при оцінці нижче 3" %>
+      <%= f.submit "Надіслати відгук", class: "btn-checkout small" %>
+    <% end %>
+    <script>
+      (function () {
+        var r = document.getElementById("review_rating"), c = document.getElementById("review_comment");
+        function sync() { var low = r.value !== "" && parseInt(r.value, 10) < 3; c.required = low;
+          c.placeholder = low ? "Коментар обов'язковий (мін. 5 символів)" : "Коментар (необов'язково)"; }
+        r.addEventListener("change", sync); sync();
+      })();
+    </script>
+  <% end %>
+<% end %>

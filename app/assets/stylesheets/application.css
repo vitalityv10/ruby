@@ -106,3 +106,12 @@ body { font-family: system-ui, sans-serif; background: #eef3f7; margin: 0; color
 .cart-title { text-align: center; margin: 8px 0 16px; }
 .cart-back { margin: 0 0 8px; }
 .cart-empty { text-align: center; }
+
+.reviews { max-width: 900px; margin: 0 auto 32px; padding: 0 16px; }
+.review-form { display: flex; flex-direction: column; gap: 8px; background: #fff; padding: 16px; border-radius: 8px; margin-bottom: 16px; }
+.review-form textarea, .review-form select { padding: 8px; border: 1px solid #b7c6d1; border-radius: 6px; font: inherit; }
+.review { background: #fff; padding: 12px 16px; border-radius: 8px; margin-bottom: 8px; }
+.review-head { display: flex; align-items: center; gap: 12px; }
+.stars { color: #f2a515; }
+.review-login { text-align: center; margin-top: 16px; }
+.card-rating { margin: 4px 0; font-size: .9rem; }
