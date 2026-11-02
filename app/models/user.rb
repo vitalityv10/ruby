@@ -3,6 +3,7 @@ class User < ApplicationRecord
 
   has_many :reviews, dependent: :destroy
 
+  has_many :orders, dependent: :destroy
   enum :role, { customer: 0, admin: 1 }
 
   before_validation { self.email = email.to_s.strip.downcase }

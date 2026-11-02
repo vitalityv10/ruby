@@ -140,3 +140,29 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
 body > .site-footer { margin-top: auto; }
 /* У flex-колонці блоки з margin: auto стискаються до ширини вмісту — тримаємо повну ширину */
 body > * { width: 100%; box-sizing: border-box; }
+
+/* Оформлення замовлення */
+.checkout { max-width: 1000px; margin: 24px auto; padding: 0 16px; }
+.checkout-columns { display: flex; gap: 24px; align-items: flex-start; @media (max-width: 800px) { flex-direction: column; } }
+.checkout-main { flex: 2; background: #fff; padding: 16px 20px; border-radius: 8px;
+  .field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+  .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
+  input[type=text], input[type=tel], input[type=password], textarea { padding: 8px; border: 1px solid #b7c6d1; border-radius: 6px; font: inherit; }
+}
+.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+.tile { display: flex; gap: 8px; align-items: center; padding: 10px; border: 2px solid #d5e0e8; border-radius: 8px; cursor: pointer;
+  &:has(input:checked) { border-color: #0b4f6c; background: #eef6fa; } }
+.card-fields { border: 1px dashed #b7c6d1; border-radius: 8px; margin-bottom: 8px; }
+.order-summary { flex: 1; background: #fff; padding: 16px 20px; border-radius: 8px;
+  ul { list-style: none; padding: 0; margin: 0 0 12px; }
+  li { display: flex; justify-content: space-between; gap: 8px; padding: 4px 0; border-bottom: 1px solid #e3ebf0; } }
+.success-banner { background: #dff3e4; color: #1b6b35; padding: 14px; border-radius: 8px; font-weight: 700; text-align: center; margin-bottom: 16px; }
+.receipt-info { background: #fff; padding: 12px 20px; border-radius: 8px; margin: 16px 0; }
+.receipt-total { font-size: 1.2rem; text-align: right; }
+.iban-box { background: #eef6fa; padding: 8px; border-radius: 6px; }
+
+/* Профіль */
+.profile { max-width: 1100px; margin: 24px auto; padding: 0 16px; }
+.profile-columns { display: flex; gap: 24px; align-items: flex-start; @media (max-width: 800px) { flex-direction: column; } }
+.profile-card { flex: 1; background: #fff; padding: 16px 20px; border-radius: 8px; }
+.profile-orders { flex: 3; width: 100%; }

@@ -24,6 +24,8 @@ Rails.application.routes.draw do
   resources :users, only: [:create]
   get  "login",  to: "sessions#new"
   post "login",  to: "sessions#create"
+  resource :profile, only: [:show]
+  resources :orders, only: [:new, :create, :show]
   get  "contact", to: "feedbacks#new"
   post "contact", to: "feedbacks#create"
   delete "logout", to: "sessions#destroy"
