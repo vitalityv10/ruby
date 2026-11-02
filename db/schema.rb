@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_02_151000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_02_160100) do
   create_table "carts", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -49,6 +49,35 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_02_151000) do
     t.index ["cart_id", "product_id"], name: "index_line_items_on_cart_id_and_product_id", unique: true
     t.index ["cart_id"], name: "index_line_items_on_cart_id"
     t.index ["product_id"], name: "index_line_items_on_product_id"
+  end
+
+  create_table "order_items", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "order_id", null: false
+    t.decimal "price_at_order", precision: 10, scale: 2, null: false
+    t.integer "product_id", null: false
+    t.integer "quantity", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_order_items_on_order_id"
+    t.index ["product_id"], name: "index_order_items_on_product_id"
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.string "city", null: false
+    t.datetime "created_at", null: false
+    t.decimal "delivery_cost", precision: 10, scale: 2, default: "0.0", null: false
+    t.integer "delivery_method", default: 0, null: false
+    t.text "delivery_notes"
+    t.integer "payment_method", default: 0, null: false
+    t.integer "payment_status", default: 0, null: false
+    t.string "recipient_name", null: false
+    t.string "recipient_phone", null: false
+    t.integer "status", default: 0, null: false
+    t.decimal "total_amount", precision: 10, scale: 2, default: "0.0", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.string "warehouse_or_address", null: false
+    t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
   create_table "products", force: :cascade do |t|
@@ -93,6 +122,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_02_151000) do
   add_foreign_key "carts", "users"
   add_foreign_key "line_items", "carts"
   add_foreign_key "line_items", "products"
+  add_foreign_key "order_items", "orders"
+  add_foreign_key "order_items", "products"
+  add_foreign_key "orders", "users"
   add_foreign_key "products", "categories"
   add_foreign_key "reviews", "products"
   add_foreign_key "reviews", "users"

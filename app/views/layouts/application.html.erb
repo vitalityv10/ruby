@@ -29,7 +29,7 @@
       <span>
         <% if logged_in? %>
           <%= link_to "Кошик (#{current_cart.total_items})", cart_path, class: "cart-badge" %> ·
-          <%= current_user.full_name %>
+          <%= link_to current_user.full_name, profile_path %>
           <%= button_to "Вийти", logout_path, method: :delete, class: "btn-link", form: { class: "inline" } %>
         <% else %>
           <%= link_to "Вхід", login_path %> · <%= link_to "Реєстрація", register_path %>

@@ -26,24 +26,12 @@ class Feedback < ApplicationRecord
   validates :email, presence: { message: "не може бути порожнім" },
                     format: { with: URI::MailTo::EMAIL_REGEXP, message: "має некоректний формат" },
                     allow_blank: true
-  # Телефон обов'язковий, український формат: +380XXXXXXXXX, 380XXXXXXXXX або 0XXXXXXXXX.
-  # Пробіли, дужки та дефіси дозволені лише як роздільники (перевіряємо після їх видалення).
-  validates :phone, presence: { message: "не може бути порожнім" }
-  validate :phone_format, if: -> { phone.present? }
+  include UkrainianPhone
+  validates_ukrainian_phone :phone
   validates :topic, presence: { message: "потрібно вибрати" },
                     inclusion: { in: TOPICS, message: "обрано некоректно" }, allow_blank: true
   # Артикул обов'язковий для питань щодо снастей та гарантії
   validates :sku, presence: { message: "потрібно вказати для цієї теми (артикул є на сторінці товару)" },
                   if: -> { TOPICS_REQUIRING_SKU.include?(topic) }
   validates :message, presence: { message: "не може бути порожнім" }
-
-  private
-
-  def phone_format
-    valid_chars = phone.match?(/\A\+?[\d\s()\-]+\z/) && !phone.start_with?("-")
-    digits = phone.gsub(/\D/, "")
-    unless valid_chars && digits.match?(/\A(38)?0\d{9}\z/) && (!phone.start_with?("+") || digits.start_with?("38"))
-      errors.add(:phone, "має некоректний формат (приклад: +38 044 123-45-67)")
-    end
-  end
 end

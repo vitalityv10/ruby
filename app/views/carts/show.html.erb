@@ -37,7 +37,7 @@
     <% end %>
     <div class="cart-summary">
       <p>Загальна сума: <strong><%= format_uah(current_cart.total_price) %></strong></p>
-      <%= link_to "Перейти до оформлення", "#", class: "btn-checkout" %>
+      <%= link_to "Перейти до оформлення", new_order_path, class: "btn-checkout" %>
     </div>
   <% end %>
 </div>
