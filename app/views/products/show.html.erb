@@ -20,3 +20,14 @@
     <% if @product.in_stock? %><%= button_to "Додати до кошика", line_items_path(product_id: @product.id), class: "btn-checkout" %><% end %>
   </div>
 </div>
+<section class="reviews">
+  <h2>Відгуки</h2>
+  <p class="rating-summary">
+    <% if @product.average_rating %>Рейтинг: <%= @product.average_rating %> / 5 ★ (<%= @reviews.size %>)<% else %>Відгуків ще немає<% end %>
+  </p>
+  <%= render "reviews/form" %>
+  <%= render partial: "reviews/review", collection: @reviews %>
+  <% unless logged_in? %>
+    <p class="review-login"><%= link_to "Увійдіть, щоб залишити відгук", login_path, class: "btn-checkout small" %></p>
+  <% end %>
+</section>
