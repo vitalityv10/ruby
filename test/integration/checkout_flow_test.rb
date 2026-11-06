@@ -68,3 +68,42 @@ class ProfileTest < ActionDispatch::IntegrationTest
     assert_match "Блешня × 1", response.body
   end
 end
+
+class OrderCancelTest < ActionDispatch::IntegrationTest
+  setup do
+    @user = User.create!(email: "c@example.com", password: "password123", first_name: "І", last_name: "П", phone: "+380441234567")
+    @admin = User.create!(email: "a@example.com", password: "password123", first_name: "А", last_name: "Д", phone: "+380441234567", role: :admin)
+    @product = Product.create!(name: "Спінінг", price: 100, stock_quantity: 3, category: Category.create!(name: "К", slug: "k3"))
+  end
+
+  def make_order(attrs = {})
+    o = @user.orders.create!({ recipient_name: "І", recipient_phone: "+380441234567", city: "Київ",
+                               warehouse_or_address: "1", total_amount: 100, status: :completed }.merge(attrs))
+    o.order_items.create!(product: @product, quantity: 1, price_at_order: 100)
+    @product.update!(stock_quantity: 2)
+    o
+  end
+
+  def login(u) = post(login_path, params: { email: u.email, password: "password123" })
+
+  test "неоплачене скасовується клієнтом, склад повертається" do
+    login(@user); o = make_order
+    patch cancel_order_path(o)
+    assert o.reload.cancelled?
+    assert_equal 3, @product.reload.stock_quantity
+  end
+
+  test "оплачене клієнт скасувати не може — звернутися до адміна" do
+    login(@user); o = make_order(payment_status: :paid)
+    patch cancel_order_path(o)
+    assert o.reload.completed?
+    assert_match "адміністратора", flash[:alert]
+  end
+
+  test "відправлене скасувати не можна" do
+    login(@user); o = make_order(status: :shipped)
+    patch cancel_order_path(o)
+    assert o.reload.shipped?
+  end
+
+end

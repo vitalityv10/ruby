@@ -1,6 +1,9 @@
 class Product < ApplicationRecord
   belongs_to :category
-  has_many :reviews, dependent: :destroy
+  has_many :reviews, dependent: :destroy
+  has_many :line_items, dependent: :destroy
+  # Товар, що вже є в замовленнях, видаляти не можна (історія замовлень має зберігатись)
+  has_many :order_items, dependent: :restrict_with_error
 
   validates :name, presence: true
   validates :price, numericality: { greater_than: 0 }

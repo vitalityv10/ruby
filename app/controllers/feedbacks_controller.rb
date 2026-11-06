@@ -5,7 +5,7 @@ class FeedbacksController < ApplicationController
   end
 
   def create
-    @feedback = Feedback.new(feedback_params)
+    @feedback = Feedback.new(feedback_params.merge(user: current_user))
     if @feedback.save
       redirect_to contact_path,
         notice: "Дякуємо! Ваше звернення прийнято. Наш рибальський експерт зв'яжеться з вами."

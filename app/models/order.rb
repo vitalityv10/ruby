@@ -24,7 +24,8 @@ class Order < ApplicationRecord
   belongs_to :user
   has_many :order_items, dependent: :destroy
 
-  enum :status, { in_progress: 0, completed: 1, cancelled: 2 }
+  # completed = замовлення оформлено й очікує відправки; shipped = у дорозі; delivered = отримано
+  enum :status, { in_progress: 0, completed: 1, cancelled: 2, shipped: 3, delivered: 4 }
   enum :delivery_method, { nova_poshta: 0, ukrposhta: 1, courier: 2, pickup: 3 }
   enum :payment_method, { cash_on_delivery: 0, online_card: 1, iban_transfer: 2 }
   enum :payment_status, { unpaid: 0, paid: 1, failed: 2 }
@@ -49,6 +50,43 @@ class Order < ApplicationRecord
 
   def items_subtotal
     order_items.sum(&:subtotal)
+  end
+
+  # Дозволені переходи статусів для адміністратора
+  TRANSITIONS = {
+    "in_progress" => %w[completed cancelled],
+    "completed" => %w[shipped cancelled],
+    "shipped" => %w[delivered]
+  }.freeze
+
+  STATUS_LABELS = {
+    "in_progress" => "Обробляється", "completed" => "Очікує відправки", "cancelled" => "Скасовано",
+    "shipped" => "Відправлено", "delivered" => "Отримано"
+  }.freeze
+
+  def status_label = STATUS_LABELS[status]
+
+  # Правила скасування:
+  #  :self_service — неоплачене й ще не відправлене: клієнт скасовує сам;
+  #  :contact_admin — оплачене й ще не відправлене: лише через адміністратора;
+  #  :shipped — відправлене: скасувати не можна, поки не надійде;
+  #  :closed — уже скасоване або отримане.
+  def cancellation_mode
+    return :closed if cancelled? || delivered?
+    return :shipped if shipped?
+    paid? ? :contact_admin : :self_service
+  end
+
+  # Скасування в транзакції: повертаємо товари на склад і ставимо статус «скасовано»
+  def cancel!
+    transaction do
+      lock!
+      raise ActiveRecord::RecordInvalid, self unless %i[self_service contact_admin].include?(cancellation_mode)
+      order_items.includes(:product).each do |i|
+        i.product.lock!.update!(stock_quantity: i.product.stock_quantity + i.quantity)
+      end
+      update!(status: :cancelled)
+    end
   end
 
   def delivery_label = DELIVERY_LABELS[delivery_method]

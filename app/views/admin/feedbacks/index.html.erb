@@ -1,0 +1,22 @@
+<% content_for :title, "Звернення — адмін" %>
+<div class="admin">
+  <%= render "admin/nav" %>
+  <h1>Звернення клієнтів</h1>
+  <div class="admin-toolbar">
+    <%= link_to "Усі", admin_feedbacks_path, class: "page-link#{' current' unless @filter}" %>
+    <%= link_to "Нові", admin_feedbacks_path(status: "pending"), class: "page-link#{' current' if @filter == 'pending'}" %>
+    <%= link_to "Опрацьовані", admin_feedbacks_path(status: "resolved"), class: "page-link#{' current' if @filter == 'resolved'}" %>
+  </div>
+  <table class="cart-table">
+    <thead><tr><th>Дата</th><th>Ім'я</th><th>Тема</th><th>Артикул</th><th>Статус</th><th></th></tr></thead>
+    <tbody>
+      <% @feedbacks.each do |f| %>
+        <tr>
+          <td><%= l(f.created_at, format: "%d.%m.%Y %H:%M") %></td><td><%= f.name %></td><td><%= f.topic %></td><td><%= f.sku %></td>
+          <td><%= f.resolved? ? "відповідано" : "нове" %></td><td><%= link_to "Відкрити", admin_feedback_path(f) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= render "admin/pagination" %>
+</div>

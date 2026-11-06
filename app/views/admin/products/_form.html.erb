@@ -1,0 +1,16 @@
+<%= form_with model: [:admin, product], class: "admin-form" do |f| %>
+  <% if product.errors.any? %>
+    <ul class="form-errors"><% product.errors.full_messages.each do |m| %><li><%= m %></li><% end %></ul>
+  <% end %>
+  <div class="field"><%= f.label :name, "Назва" %><%= f.text_field :name, required: true %></div>
+  <div class="field"><%= f.label :category_id, "Категорія" %><%= f.collection_select :category_id, @categories, :id, :name, { prompt: "Оберіть категорію" }, required: true %></div>
+  <div class="field-grid">
+    <div class="field"><%= f.label :price, "Ціна, грн" %><%= f.number_field :price, step: "0.01", min: "0.01", required: true %></div>
+    <div class="field"><%= f.label :stock_quantity, "Залишок на складі" %><%= f.number_field :stock_quantity, min: 0, required: true %></div>
+    <div class="field"><%= f.label :sku, "Артикул" %><%= f.text_field :sku %></div>
+    <div class="field"><%= f.label :image_url, "Посилання на фото" %><%= f.text_field :image_url %></div>
+  </div>
+  <div class="field"><%= f.label :description, "Опис" %><%= f.text_area :description, rows: 4 %></div>
+  <%= f.submit "Зберегти", class: "btn-checkout" %>
+  <%= link_to "Скасувати", admin_products_path %>
+<% end %>
