@@ -35,3 +35,6 @@ products.each do |slug, name, price, stock, sku|
 end
 
 puts "Категорій: #{Category.count}, товарів: #{Product.count}"
+
+user = User.find_by(email: "vintoniakvitalij74@gmail.com")
+user&.update!(admin: true)
