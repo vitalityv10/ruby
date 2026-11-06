@@ -1,9 +1,11 @@
 #!/bin/bash -e
 
-# If running the rails server then create or migrate existing database
-if [ "${*}" == "./bin/rails server" ]; then
-  ./bin/rails db:prepare
-  ./bin/rails runner 'User.find_by(email: "admin@gmail.com")&.update!(admin: true)'
-fi
+case "$*" in
+  *"./bin/rails server"*)
+    ./bin/rails db:prepare
+    ./bin/rails db:seed
+    ./bin/rails runner 'User.find_by(email: "admin@gmail.com")&.update!(admin: true)'
+    ;;
+esac
 
 exec "${@}"
