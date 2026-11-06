@@ -1,0 +1,19 @@
+<% content_for :title, "Додати товари через JSON" %>
+<div class="admin">
+  <%= render "admin/nav" %>
+  <h1>Масове додавання товарів (JSON)</h1>
+  <% if @errors.present? %>
+    <ul class="form-errors"><% @errors.each do |m| %><li><%= m %></li><% end %></ul>
+    <p class="muted">Жоден товар не збережено. Виправте помилки й спробуйте ще раз.</p>
+  <% end %>
+  <p>Вставте масив товарів. Категорія вказується її <strong>назвою</strong> (вона вже має існувати). Обов'язкові поля: <code>name</code>, <code>category</code>, <code>price</code>.</p>
+  <pre class="json-example">[
+  {"name": "Спінінг Pro 2.4м", "category": "Вудилища та спінінги", "price": 1500,
+   "stock_quantity": 10, "sku": "RD-1001", "description": "Опис", "image_url": ""}
+]</pre>
+  <%= form_with url: bulk_create_admin_products_path, class: "admin-form" do |f| %>
+    <%= f.text_area :json, value: @json, rows: 14, required: true, placeholder: "[ { ... } ]", class: "json-input" %>
+    <%= f.submit "Імпортувати", class: "btn-checkout" %>
+    <%= link_to "Назад", admin_products_path %>
+  <% end %>
+</div>

@@ -1,0 +1,18 @@
+<% if @total_pages > 1 %>
+  <% opts = { category_id: params[:category_id], q: params[:q].presence } %>
+  <nav class="pagination" aria-label="Сторінки">
+    <% if @page > 1 %>
+      <%= link_to "Попередня", products_path(opts.merge(page: @page - 1)), class: "page-link" %>
+    <% else %>
+      <span class="page-link disabled">Попередня</span>
+    <% end %>
+    <% (1..@total_pages).each do |n| %>
+      <%= link_to n, products_path(opts.merge(page: n)), class: "page-link#{' current' if n == @page}" %>
+    <% end %>
+    <% if @page < @total_pages %>
+      <%= link_to "Наступна", products_path(opts.merge(page: @page + 1)), class: "page-link" %>
+    <% else %>
+      <span class="page-link disabled">Наступна</span>
+    <% end %>
+  </nav>
+<% end %>

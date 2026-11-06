@@ -1,0 +1,25 @@
+<% content_for :title, "Замовлення — адмін" %>
+<div class="admin">
+  <%= render "admin/nav" %>
+  <h1>Замовлення</h1>
+  <div class="admin-toolbar">
+    <%= link_to "Усі", admin_orders_path, class: "page-link#{' current' unless @status}" %>
+    <% Order::STATUS_LABELS.each do |key, label| %>
+      <%= link_to label, admin_orders_path(status: key), class: "page-link#{' current' if @status == key}" %>
+    <% end %>
+  </div>
+  <table class="cart-table">
+    <thead><tr><th>№</th><th>Дата</th><th>Клієнт</th><th>Статус</th><th>Оплата</th><th>Сума</th></tr></thead>
+    <tbody>
+      <% @orders.each do |o| %>
+        <tr>
+          <td><%= link_to "№#{o.id}", admin_order_path(o) %></td>
+          <td><%= l(o.created_at, format: "%d.%m.%Y %H:%M") %></td>
+          <td><%= o.recipient_name %></td><td><%= o.status_label %></td>
+          <td><%= o.paid? ? "оплачено" : "не оплачено" %></td><td><%= format_uah(o.total_amount) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= render "admin/pagination" %>
+</div>

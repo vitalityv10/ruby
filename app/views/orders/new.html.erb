@@ -1,0 +1,59 @@
+<% content_for :title, "Оформлення замовлення" %>
+<div class="checkout">
+  <h1>Оформлення замовлення</h1>
+  <%= form_with model: @order, class: "checkout-form" do |f| %>
+    <div class="checkout-columns">
+      <div class="checkout-main">
+        <% if @order.errors.any? %>
+          <ul class="form-errors"><% @order.errors.full_messages.each do |m| %><li><%= m %></li><% end %></ul>
+        <% end %>
+
+        <h2>1. Доставка</h2>
+        <div class="tiles">
+          <% Order::DELIVERY_LABELS.each do |key, label| %>
+            <label class="tile">
+              <%= f.radio_button :delivery_method, key, data: { cost: Order.delivery_cost_for(key) } %>
+              <span><%= label %><br><small><%= Order.delivery_cost_for(key).zero? ? "безкоштовно" : format_uah(Order.delivery_cost_for(key)) %></small></span>
+            </label>
+          <% end %>
+        </div>
+        <div class="field-grid">
+          <div class="field"><%= f.label :recipient_name %><%= f.text_field :recipient_name, required: true %></div>
+          <div class="field"><%= f.label :recipient_phone %><%= f.telephone_field :recipient_phone, required: true, placeholder: "+38 (0__) ___-__-__" %></div>
+          <div class="field"><%= f.label :city %><%= f.text_field :city, required: true %></div>
+          <div class="field"><%= f.label :warehouse_or_address, "Номер відділення / адреса" %><%= f.text_field :warehouse_or_address, required: true %></div>
+        </div>
+        <div class="field"><%= f.label :delivery_notes, "Коментар до доставки" %><%= f.text_area :delivery_notes, rows: 2 %></div>
+
+        <h2>2. Оплата</h2>
+        <div class="tiles">
+          <% Order::PAYMENT_LABELS.each do |key, label| %>
+            <label class="tile"><%= f.radio_button :payment_method, key %><span><%= label %></span></label>
+          <% end %>
+        </div>
+        <fieldset class="card-fields">
+          <legend>Тестова картка (симуляція, дані не зберігаються)</legend>
+          <div class="field-grid">
+            <div class="field"><%= f.label :card_number %><%= f.text_field :card_number, maxlength: 16, inputmode: "numeric", placeholder: "16 цифр" %></div>
+            <div class="field"><%= f.label :card_expiry, "Термін дії (ММ/РР)" %><%= f.text_field :card_expiry, maxlength: 5, placeholder: "12/28" %></div>
+            <div class="field"><%= f.label :card_cvv %><%= f.password_field :card_cvv, maxlength: 3, inputmode: "numeric" %></div>
+          </div>
+          <small>Для відмови оплати введіть номер, що починається з 0000.</small>
+        </fieldset>
+        <p class="iban-note">При оплаті за реквізитами IBAN реквізити з'являться на сторінці підтвердження.</p>
+      </div>
+
+      <aside class="order-summary">
+        <h2>Ваше замовлення</h2>
+        <ul>
+          <% current_cart.line_items.includes(:product).order(:id).each do |li| %>
+            <li><span><%= li.product.name %> × <%= li.quantity %></span><span><%= format_uah(li.subtotal) %></span></li>
+          <% end %>
+        </ul>
+        <p>Товари: <strong><%= format_uah(current_cart.total_price) %></strong></p>
+        <p>Доставка: <strong><%= format_uah(Order.delivery_cost_for(@order.delivery_method)) %></strong> <small>(залежить від способу)</small></p>
+        <%= f.submit "Підтвердити замовлення", class: "btn-checkout" %>
+      </aside>
+    </div>
+  <% end %>
+</div>

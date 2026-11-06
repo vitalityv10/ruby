@@ -22,6 +22,8 @@ module Laba1
     # in config/environments, which are processed later.
     #
     # config.time_zone = "Central Time (US & Canada)"
+    config.i18n.default_locale = :uk
+    config.i18n.fallbacks = [:en]
     # config.eager_load_paths << Rails.root.join("extras")
   end
 end

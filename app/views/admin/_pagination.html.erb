@@ -1,0 +1,7 @@
+<% if @total_pages > 1 %>
+  <nav class="pagination" aria-label="Сторінки">
+    <% (1..@total_pages).each do |n| %>
+      <%= link_to n, url_for(request.query_parameters.merge(page: n)), class: "page-link#{' current' if n == @page}" %>
+    <% end %>
+  </nav>
+<% end %>

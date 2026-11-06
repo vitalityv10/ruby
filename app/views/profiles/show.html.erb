@@ -1,0 +1,64 @@
+<% content_for :title, "Мій профіль" %>
+<div class="profile">
+  <h1>Мій профіль</h1>
+  <div class="profile-columns">
+    <aside class="profile-card">
+      <h2>Мої дані</h2>
+      <p><strong>Ім'я:</strong> <%= current_user.full_name %></p>
+      <p><strong>Email:</strong> <%= current_user.email %></p>
+      <p><strong>Телефон:</strong> <%= current_user.phone.presence || "не вказано" %></p>
+    </aside>
+
+    <% unless current_user.admin? %>
+    <section class="profile-orders">
+      <h2>Мої замовлення</h2>
+      <% if @orders.empty? %>
+        <p class="muted">У вас ще немає замовлень. <%= link_to "Перейти до каталогу", root_path %></p>
+      <% else %>
+        <table class="cart-table">
+          <thead><tr><th>№</th><th>Дата</th><th>Товари</th><th>Доставка</th><th>Оплата</th><th>Статус</th><th>Сума</th></tr></thead>
+          <tbody>
+            <% @orders.each do |o| %>
+              <tr>
+                <td><%= link_to "№#{o.id}", order_path(o) %></td>
+                <td><%= l(o.created_at, format: "%d.%m.%Y %H:%M") %></td>
+                <td><%= o.order_items.map { |i| "#{i.product.name} × #{i.quantity}" }.join(", ") %></td>
+                <td><%= o.delivery_label %></td>
+                <td><%= { "unpaid" => "не оплачено", "paid" => "оплачено", "failed" => "помилка" }[o.payment_status] %></td>
+                <td><%= o.status_label %></td>
+                <td><%= format_uah(o.total_amount) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+        <% if @total_pages > 1 %>
+          <nav class="pagination" aria-label="Сторінки">
+            <% (1..@total_pages).each do |n| %>
+              <%= link_to n, profile_path(page: n), class: "page-link#{' current' if n == @page}" %>
+            <% end %>
+          </nav>
+        <% end %>
+      <% end %>
+    </section>
+    <% end %>
+  </div>
+  <% unless current_user.admin? %>
+  <section class="profile-feedbacks">
+    <h2>Мої звернення</h2>
+    <% if @feedbacks.empty? %>
+      <p class="muted">Звернень немає. <%= link_to "Написати нам", contact_path %></p>
+    <% end %>
+    <% @feedbacks.each do |f| %>
+      <div class="review">
+        <p><strong><%= f.topic %></strong> <span class="muted"><%= l(f.created_at, format: "%d.%m.%Y") %></span></p>
+        <p><%= f.message %></p>
+        <% if f.admin_reply.present? %>
+          <p class="admin-reply"><strong>Відповідь магазину:</strong> <%= f.admin_reply %></p>
+        <% else %>
+          <p class="muted">Очікує відповіді</p>
+        <% end %>
+      </div>
+    <% end %>
+  </section>
+  <% end %>
+</div>

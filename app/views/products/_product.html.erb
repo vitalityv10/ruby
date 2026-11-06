@@ -1,0 +1,23 @@
+<article class="product-card">
+  <%= link_to product_path(product), class: "product-image" do %>
+    <% if product.image_url.present? %>
+      <%= image_tag product.image_url, alt: product.name %>
+    <% else %>
+      <span class="placeholder">🎣</span>
+    <% end %>
+  <% end %>
+  <div class="product-body">
+    <span class="badge"><%= product.category.name %></span>
+    <h3><%= link_to product.name, product_path(product) %></h3>
+    <p class="price"><%= format_uah(product.price) %></p>
+    <p class="card-rating">
+      <% if @ratings && @ratings[product.id] %>
+        <span class="stars">★</span> <%= @ratings[product.id].to_f.round(1) %> <span class="muted">(<%= @review_counts[product.id] %>)</span>
+      <% else %>
+        <span class="muted">Немає оцінок</span>
+      <% end %>
+    </p>
+    <p class="stock <%= product.in_stock? ? 'in' : 'out' %>"><%= product.in_stock? ? "В наявності" : "Немає в наявності" %></p>
+    <% if product.in_stock? %><%= button_to "До кошика", line_items_path(product_id: product.id), class: "btn-checkout small" %><% end %>
+  </div>
+</article>

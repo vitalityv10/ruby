@@ -1,0 +1,33 @@
+<% content_for :title, "Замовлення №#{@order.id}" %>
+<div class="admin">
+  <%= render "admin/nav" %>
+  <h1>Замовлення №<%= @order.id %> — <%= @order.status_label %></h1>
+  <table class="cart-table">
+    <thead><tr><th>Товар</th><th>Ціна</th><th>К-сть</th><th>Сума</th></tr></thead>
+    <tbody>
+      <% @order.order_items.each do |i| %>
+        <tr><td><%= i.product.name %></td><td><%= format_uah(i.price_at_order) %></td><td><%= i.quantity %></td><td><%= format_uah(i.subtotal) %></td></tr>
+      <% end %>
+    </tbody>
+  </table>
+  <div class="receipt-info">
+    <p><strong>Клієнт:</strong> <%= @order.user.email %></p>
+    <p><strong>Одержувач:</strong> <%= @order.recipient_name %>, <%= @order.recipient_phone %></p>
+    <p><strong>Доставка:</strong> <%= @order.delivery_label %> — <%= @order.city %>, <%= @order.warehouse_or_address %> (<%= format_uah(@order.delivery_cost) %>)</p>
+    <% if @order.delivery_notes.present? %><p><strong>Коментар:</strong> <%= @order.delivery_notes %></p><% end %>
+    <p><strong>Оплата:</strong> <%= @order.payment_label %> — <%= { "unpaid" => "не оплачено", "paid" => "оплачено", "failed" => "помилка" }[@order.payment_status] %></p>
+    <p class="receipt-total">Разом: <strong><%= format_uah(@order.total_amount) %></strong></p>
+  </div>
+  <div class="order-actions">
+    <% targets = Order::TRANSITIONS.fetch(@order.status, []) %>
+    <% targets.each do |t| %>
+      <%= button_to "→ #{Order::STATUS_LABELS[t]}", update_status_admin_order_path(@order, status: t), method: :patch,
+            class: (t == "cancelled" ? "btn-danger" : "btn-checkout small"),
+            form: (t == "cancelled" ? { data: { turbo_confirm: "Скасувати замовлення? Товари повернуться на склад." } } : {}) %>
+    <% end %>
+    <% unless @order.paid? || @order.cancelled? %>
+      <%= button_to "Позначити оплаченим", mark_paid_admin_order_path(@order), method: :patch, class: "btn-checkout small" %>
+    <% end %>
+    <%= link_to "До списку", admin_orders_path %>
+  </div>
+</div>

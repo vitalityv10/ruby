@@ -1,0 +1,24 @@
+uk:
+  activerecord:
+    attributes:
+      user:
+        email: "Електронна пошта"
+        password: "Пароль"
+        password_confirmation: "Підтвердження пароля"
+        first_name: "Ім'я"
+        last_name: "Прізвище"
+        phone: "Телефон"
+    errors:
+      models:
+        user:
+          attributes:
+            password_confirmation:
+              confirmation: "не збігається з паролем"
+            password:
+              blank: "не може бути порожнім"
+  errors:
+    format: "%{attribute} %{message}"
+    messages:
+      blank: "не може бути порожнім"
+      invalid: "має неправильний формат"
+      taken: "вже зареєстровано"

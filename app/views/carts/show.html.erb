@@ -1,0 +1,43 @@
+<% content_for :title, "Кошик — Рибальський дворик" %>
+<div class="cart-page">
+  <%= link_to "← Назад", products_path, class: "back-link cart-back", data: { turbo: false }, onclick: "if (history.length > 1) { history.back(); return false; }" %>
+  <h1 class="cart-title">Кошик</h1>
+  <% if @line_items.empty? %>
+    <p class="cart-empty">Ваш кошик порожній.</p>
+  <% else %>
+    <table class="cart-table">
+      <thead><tr><th></th><th>Товар</th><th>Ціна</th><th>Кількість</th><th>Сума</th><th></th></tr></thead>
+      <tbody>
+        <% @line_items.each do |item| %>
+          <tr>
+            <td class="thumb">
+              <% if item.product.image_url.present? %><%= image_tag item.product.image_url, alt: item.product.name %><% else %>🎣<% end %>
+            </td>
+            <td><%= link_to item.product.name, product_path(item.product) %></td>
+            <td><%= format_uah(item.product.price) %></td>
+            <td class="qty">
+              <%= button_to "−", line_item_path(item, change: -1), method: :patch, class: "qty-btn" %>
+              <span><%= item.quantity %></span>
+              <%= button_to "+", line_item_path(item, change: 1), method: :patch, class: "qty-btn" %>
+            </td>
+            <td><%= format_uah(item.subtotal) %></td>
+            <td><%= button_to "Видалити", line_item_path(item), method: :delete, class: "btn-danger" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <% if @total_pages > 1 %>
+      <nav class="pagination" aria-label="Сторінки">
+        <% if @page > 1 %><%= link_to "Попередня", cart_path(page: @page - 1), class: "page-link" %><% else %><span class="page-link disabled">Попередня</span><% end %>
+        <% (1..@total_pages).each do |n| %>
+          <%= link_to n, cart_path(page: n), class: "page-link#{' current' if n == @page}" %>
+        <% end %>
+        <% if @page < @total_pages %><%= link_to "Наступна", cart_path(page: @page + 1), class: "page-link" %><% else %><span class="page-link disabled">Наступна</span><% end %>
+      </nav>
+    <% end %>
+    <div class="cart-summary">
+      <p>Загальна сума: <strong><%= format_uah(current_cart.total_price) %></strong></p>
+      <%= link_to "Перейти до оформлення", new_order_path, class: "btn-checkout" %>
+    </div>
+  <% end %>
+</div>

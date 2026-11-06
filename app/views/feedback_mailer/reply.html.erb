@@ -1,0 +1,5 @@
+<p>Вітаємо, <%= @feedback.name %>!</p>
+<p>Відповідь на ваше звернення («<%= @feedback.topic %>»):</p>
+<blockquote><%= simple_format(@feedback.admin_reply) %></blockquote>
+<p>Ваше повідомлення: <em><%= @feedback.message %></em></p>
+<p>З повагою, «Рибальський дворик»</p>

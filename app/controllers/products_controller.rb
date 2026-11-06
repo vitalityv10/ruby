@@ -1,0 +1,25 @@
+class ProductsController < ApplicationController
+  PER_PAGE = 6
+
+  def index
+    @categories = Category.ordered
+    @current_category = Category.find_by(id: params[:category_id])
+    @query = params[:q].to_s
+
+    scope = Product.includes(:category).in_category(params[:category_id]).search(@query).order(:name)
+
+    @total_count = scope.count
+    @total_pages = [(@total_count / PER_PAGE.to_f).ceil, 1].max
+    @page = params[:page].to_i.clamp(1, @total_pages)
+    @products = scope.limit(PER_PAGE).offset((@page - 1) * PER_PAGE)
+    # Рейтинги сторінки одним агрегатним запитом (без N+1)
+    ids = @products.map(&:id)
+    @ratings = Review.where(product_id: ids).group(:product_id).average(:rating)
+    @review_counts = Review.where(product_id: ids).group(:product_id).count
+  end
+
+  def show
+    @product = Product.includes(:category).find(params[:id])
+    @reviews = @product.reviews.includes(:user).order(created_at: :desc)
+  end
+end

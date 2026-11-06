@@ -1,0 +1,43 @@
+<% content_for :title, "Замовлення №#{@order.id}" %>
+<div class="checkout receipt">
+  <% if @order.cancelled? %>
+    <div class="success-banner cancelled">Замовлення №<%= @order.id %> скасовано.</div>
+  <% else %>
+    <div class="success-banner">Замовлення №<%= @order.id %> успішно оформлено!</div>
+  <% end %>
+  <table class="cart-table">
+    <thead><tr><th>Товар</th><th>Ціна</th><th>Кількість</th><th>Сума</th></tr></thead>
+    <tbody>
+      <% @order.order_items.each do |i| %>
+        <tr><td><%= i.product.name %></td><td><%= format_uah(i.price_at_order) %></td><td><%= i.quantity %></td><td><%= format_uah(i.subtotal) %></td></tr>
+      <% end %>
+    </tbody>
+  </table>
+  <div class="receipt-info">
+    <p><strong>Товари:</strong> <%= format_uah(@order.items_subtotal) %></p>
+    <p><strong>Доставка:</strong> <%= @order.delivery_label %> — <%= format_uah(@order.delivery_cost) %></p>
+    <p><strong>Одержувач:</strong> <%= @order.recipient_name %>, <%= @order.recipient_phone %></p>
+    <p><strong>Адреса:</strong> <%= @order.city %>, <%= @order.warehouse_or_address %></p>
+    <% if @order.delivery_notes.present? %><p><strong>Коментар:</strong> <%= @order.delivery_notes %></p><% end %>
+    <p><strong>Оплата:</strong> <%= @order.payment_label %> —
+      <%= { "unpaid" => "не оплачено", "paid" => "оплачено", "failed" => "помилка оплати" }[@order.payment_status] %></p>
+    <% if @order.iban_transfer? %>
+      <p class="iban-box">Реквізити: UA00 0000 0000 0000 0000 0000 00000, отримувач — ФОП «Рибальський дворик». Призначення платежу: замовлення №<%= @order.id %>.</p>
+    <% end %>
+    <p><strong>Статус:</strong> <%= @order.status_label %></p>
+    <p class="receipt-total">До сплати: <strong><%= format_uah(@order.total_amount) %></strong></p>
+  </div>
+  <div class="order-actions">
+    <% mode = @order.cancellation_mode %>
+    <% if mode == :self_service %>
+      <%= button_to "Скасувати замовлення", cancel_order_path(@order), method: :patch, class: "btn-danger",
+            form: { data: { turbo_confirm: "Скасувати це замовлення?" } } %>
+    <% elsif mode == :contact_admin %>
+      <p class="muted">Замовлення оплачено й ще не відправлено. Щоб скасувати його, <%= link_to "зверніться до адміністратора", contact_path %> (вкажіть номер замовлення №<%= @order.id %>).</p>
+    <% elsif mode == :shipped %>
+      <p class="muted">Замовлення вже відправлено — скасувати його не можна. Після отримання можна оформити повернення.</p>
+    <% end %>
+
+  </div>
+  <%= link_to "Продовжити покупки", root_path, class: "btn-checkout" %>
+</div>

@@ -24,6 +24,36 @@
   </head>
 
   <body>
+    <nav class="topbar">
+      <%= link_to "Рибальський дворик", (logged_in? && current_user.admin? ? admin_root_path : root_path), class: "brand" %>
+      <span>
+        <% if logged_in? && current_user.admin? %>
+          <%= link_to "Адмін-панель", admin_root_path %> ·
+          <%= current_user.full_name %>
+          <%= button_to "Вийти", logout_path, method: :delete, class: "btn-link", form: { class: "inline" } %>
+        <% elsif logged_in? %>
+          <%= link_to "Кошик (#{current_cart.total_items})", cart_path, class: "cart-badge" %> ·
+          <%= link_to current_user.full_name, profile_path %>
+          <%= button_to "Вийти", logout_path, method: :delete, class: "btn-link", form: { class: "inline" } %>
+        <% else %>
+          <%= link_to "Вхід", login_path %> · <%= link_to "Реєстрація", register_path %>
+        <% end %>
+      </span>
+    </nav>
+    <% flash.each do |type, msg| %>
+      <div class="flash flash-<%= type %>"><%= msg %></div>
+    <% end %>
     <%= yield %>
+    <% unless logged_in? && current_user.admin? %>
+    <footer class="site-footer">
+      <div class="footer-info">
+        <p><strong>Рибальський дворик</strong></p>
+        <p>м. Київ, вул. Рибальська, 12</p>
+        <p>Пн-Сб: 08:00 - 20:00, Нд: 09:00 - 17:00</p>
+        <p>+38 (044) 123-45-67 · info@rybalskyi-dvoryk.ua</p>
+      </div>
+      <%= link_to "Зв'язатися з нами", contact_path, class: "btn-checkout" %>
+    </footer>
+    <% end %>
   </body>
 </html>

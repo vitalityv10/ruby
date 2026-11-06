@@ -1,0 +1,51 @@
+<% content_for :title, "Контакти" %>
+<div class="contact-page">
+  <h1>Контакти та зворотний зв'язок</h1>
+  <div class="contact-columns">
+    <aside class="contact-details">
+      <h2>Наші контакти</h2>
+            <p><strong>Адреса:</strong><br>м. Київ, вул. Рибальська, 12</p>
+      <p><strong>Години роботи:</strong><br>Пн-Сб: 08:00 - 20:00, Нд: 09:00 - 17:00</p>
+      <p><strong>Телефон:</strong><br>+38 (044) 123-45-67</p>
+      <p><strong>Email:</strong><br>info@rybalskyi-dvoryk.ua</p>
+    </aside>
+
+    <section class="contact-form">
+      <h2>Напишіть нам</h2>
+            <%= form_with model: @feedback, url: contact_path do |f| %>
+        <% if @feedback.errors.any? %>
+          <ul class="form-errors">
+            <% @feedback.errors.full_messages.each do |m| %><li><%= m %></li><% end %>
+          </ul>
+        <% end %>
+        <div class="field-grid">
+        <div class="field">
+          <%= f.label :name, "Ім'я" %>
+          <%= f.text_field :name, required: true %>
+        </div>
+        <div class="field">
+          <%= f.label :email, "Електронна пошта" %>
+          <%= f.email_field :email, required: true %>
+        </div>
+        <div class="field">
+          <%= f.label :phone, "Телефон" %>
+          <%= f.telephone_field :phone, required: true, placeholder: "+38 (0__) ___-__-__" %>
+        </div>
+        <div class="field">
+          <%= f.label :topic, "Тема звернення" %>
+          <%= f.select :topic, Feedback::TOPICS, { prompt: "Оберіть тему" }, required: true %>
+        </div>
+        <div class="field">
+          <%= f.label :sku, "Артикул товару" %>
+          <%= f.text_field :sku, placeholder: "Напр. RD-1234 (обов'язково для консультації та гарантії)" %>
+        </div>
+        </div>
+        <div class="field">
+          <%= f.label :message, "Повідомлення" %>
+          <%= f.text_area :message, rows: 4, required: true %>
+        </div>
+        <%= f.submit "Надіслати", class: "btn-submit" %>
+      <% end %>
+    </section>
+  </div>
+</div>
